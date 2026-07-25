@@ -1,15 +1,13 @@
 
 <!DOCTYPE html>
 <!--
-  Base interaction/animation system (scroll-reveal, nav underline, shimmer buttons,
-  glass cards, dark-mode toggle) adapted from the "Folio" template by Laurent Begey,
-  distributed by ThemeWagon under the MIT License. Re-themed to black/orange and
-  rebuilt with original copy, structure and 3D + canvas motion for Ashwath N.
+  Ashwath N — Python Backend Developer & FastAPI Engineer Portfolio
+  Featuring 3D Zoom-In / Zoom-Out Section Scrolling Animations & Zero Mobile Horizontal Overflow.
 -->
 <html lang="en" x-data="app()" :class="{'light': !dark}" class="scroll-smooth">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="Ashwath N — Python Backend Developer specializing in FastAPI, REST APIs and scalable backend systems.">
 <meta name="keywords" content="Python backend developer, FastAPI developer, REST API developer, Ashwath N, backend engineer portfolio">
 <meta name="author" content="Ashwath N">
@@ -43,110 +41,261 @@ tailwind.config = {
 </script>
 
 <style>
-*,*::before,*::after{box-sizing:border-box}
-html,body{font-family:'Inter',sans-serif}
-h1,h2,h3,h4,h5,h6{font-family:'Space Grotesk',sans-serif}
-.font-mono-x{font-family:'JetBrains Mono',monospace}
-body{transition:background-color .3s,color .3s}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden !important;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
+.font-mono-x { font-family: 'JetBrains Mono', monospace; }
+body { transition: background-color .3s, color .3s; }
 
 /* noise overlay */
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
-background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
-html.light body::before{opacity:.12}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+html.light body::before { opacity: .12; }
 
-/* scrollbar */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#FF6B2B;border-radius:99px}
+/* custom scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #FF6B2B; border-radius: 99px; }
 
 /* nav underline animation */
-.nl{position:relative}
-.nl::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1.5px;background:currentColor;transition:width .22s cubic-bezier(.4,0,.2,1)}
-.nl:hover::after,.nl.on::after{width:100%}
-.nl.on{font-weight:500}
+.nl { position: relative; }
+.nl::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: currentColor;
+  transition: width .22s cubic-bezier(.4,0,.2,1);
+}
+.nl:hover::after, .nl.on::after { width: 100%; }
+.nl.on { font-weight: 500; }
 
 /* shimmer button */
-.shimmer{position:relative;overflow:hidden}
-.shimmer::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:rgba(255,255,255,.18);transform:skewX(-20deg);transition:left .4s cubic-bezier(.4,0,.2,1)}
-.shimmer:hover::after{left:160%}
+.shimmer { position: relative; overflow: hidden; }
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: rgba(255,255,255,.18);
+  transform: skewX(-20deg);
+  transition: left .4s cubic-bezier(.4,0,.2,1);
+}
+.shimmer:hover::after { left: 160%; }
 
-/* glass */
-.glass{background:rgba(255,255,255,.04);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08)}
+/* glass card */
+.glass {
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,.08);
+}
 
 /* glow blobs */
-.blob{position:absolute;border-radius:9999px;filter:blur(90px);pointer-events:none}
-html.light .blob{opacity:.4}
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+  max-width: 100vw;
+}
+html.light .blob { opacity: .4; }
 
-/* ═══ 3D scroll-reveal system ═══ */
-.persp{perspective:1400px}
-.reveal3d{opacity:0;transform:translateZ(-180px) rotateX(12deg) scale3d(.88,.88,.88);transition:opacity 1s cubic-bezier(.16,.84,.44,1),transform 1s cubic-bezier(.16,.84,.44,1);transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity}
-.reveal3d.in{opacity:1;transform:translateZ(0) rotateX(0deg) scale3d(1,1,1)}
-.reveal3d.from-left{transform:translateX(-110px) translateZ(-140px) rotateY(24deg) scale3d(.9,.9,.9)}
-.reveal3d.from-left.in{transform:translateX(0) translateZ(0) rotateY(0deg) scale3d(1,1,1)}
-.reveal3d.from-right{transform:translateX(110px) translateZ(-140px) rotateY(-24deg) scale3d(.9,.9,.9)}
-.reveal3d.from-right.in{transform:translateX(0) translateZ(0) rotateY(0deg) scale3d(1,1,1)}
-.reveal3d.zoom-out{transform:translateZ(260px) scale3d(1.25,1.25,1.25)}
-.reveal3d.zoom-out.in{transform:translateZ(0) scale3d(1,1,1)}
-.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}
+/* ═══ 3D SECTION SCROLL ZOOM-IN / ZOOM-OUT SYSTEM ═══ */
+.sec-stage {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, filter;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
 
-/* tilt (mouse-driven rotate3d) cards */
-.tilt{transform-style:preserve-3d;backface-visibility:hidden;transition:transform .35s cubic-bezier(.4,0,.2,1),border-color .18s,box-shadow .35s;will-change:transform}
-.tilt:hover{border-color:rgba(255,107,43,.5);box-shadow:0 25px 50px -20px rgba(255,107,43,.35)}
+/* Active In-View Section: Scaled 100%, sharp focus */
+.sec-stage.sec-active {
+  opacity: 1;
+  transform: scale(1) translateZ(0) rotateX(0deg);
+  filter: blur(0px);
+  pointer-events: auto;
+}
+
+/* Scrolled Past (Above Viewport): Zooms OUT away into 3D distance and fades out */
+.sec-stage.sec-above {
+  opacity: 0;
+  transform: scale(0.82) translateZ(-260px) rotateX(-8deg);
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+/* Upcoming (Below Viewport): Zooms OUT away below, ready to zoom IN on scroll */
+.sec-stage.sec-below {
+  opacity: 0;
+  transform: scale(0.82) translateZ(-260px) rotateX(8deg);
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+/* ═══ INNER 3D REVEAL CARDS ═══ */
+.reveal3d {
+  opacity: 0;
+  transform: translateZ(-140px) rotateX(10deg) scale3d(.9, .9, .9);
+  transition: opacity 0.8s cubic-bezier(.16,.84,.44,1), transform 0.8s cubic-bezier(.16,.84,.44,1);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+.reveal3d.in {
+  opacity: 1;
+  transform: translateZ(0) rotateX(0deg) scale3d(1, 1, 1);
+}
+.reveal3d.from-left { transform: translateX(-40px) translateZ(-100px) rotateY(12deg) scale3d(.92,.92,.92); }
+.reveal3d.from-left.in { transform: translateX(0) translateZ(0) rotateY(0deg) scale3d(1, 1, 1); }
+.reveal3d.from-right { transform: translateX(40px) translateZ(-100px) rotateY(-12deg) scale3d(.92,.92,.92); }
+.reveal3d.from-right.in { transform: translateX(0) translateZ(0) rotateY(0deg) scale3d(1, 1, 1); }
+
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* tilt cards */
+.tilt {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: transform .35s cubic-bezier(.4,0,.2,1), border-color .18s, box-shadow .35s;
+  will-change: transform;
+}
+.tilt:hover {
+  border-color: rgba(255,107,43,.5);
+  box-shadow: 0 25px 50px -20px rgba(255,107,43,.35);
+}
 
 /* skill tag */
-.stag{transition:border-color .18s,background-color .18s,transform .18s}
-.stag:hover{border-color:rgba(255,107,43,.6);background-color:rgba(255,107,43,.08);transform:translateZ(10px) scale(1.05)}
+.stag { transition: border-color .18s, background-color .18s, transform .18s; }
+.stag:hover {
+  border-color: rgba(255,107,43,.6);
+  background-color: rgba(255,107,43,.08);
+  transform: translateZ(10px) scale(1.05);
+}
 
 /* timeline line */
-.tl-line{background:linear-gradient(180deg,rgba(255,107,43,.05),rgba(255,107,43,.6),rgba(255,107,43,.05))}
-.ring-bg{--tw-ring-color:#08070a}
-html.light .ring-bg{--tw-ring-color:#f7f5f1}
+.tl-line { background: linear-gradient(180deg, rgba(255,107,43,.15), rgba(255,107,43,.8), rgba(255,107,43,.2)); }
+.ring-bg { --tw-ring-color:#08070a; }
+html.light .ring-bg { --tw-ring-color:#f7f5f1; }
+
+/* ═══ EDUCATION TIMELINE MOVING ORANGE DOT ═══ */
+.edu-traveler-dot {
+  position: absolute;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 9999px;
+  background-color: #FF6B2B;
+  box-shadow: 0 0 12px #FF6B2B, 0 0 24px #FF8F5C, 0 0 36px #FF6B2B;
+  animation: eduMove 3.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  z-index: 20;
+}
+.edu-traveler-dot::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2.5px;
+  height: 48px;
+  background: linear-gradient(to bottom, #FF6B2B, rgba(255, 107, 43, 0));
+  pointer-events: none;
+}
+
+@keyframes eduMove {
+  0% { top: 100%; opacity: 0.2; transform: scale(0.8); }
+  15% { opacity: 1; transform: scale(1.2); }
+  75% { top: 0%; opacity: 1; transform: scale(1.3); box-shadow: 0 0 20px #FF6B2B, 0 0 40px #FF8F5C; }
+  88%, 100% { top: 0%; opacity: 1; transform: scale(1.1); box-shadow: 0 0 16px #FF6B2B, 0 0 30px #FF8F5C; }
+}
+
+.college-pulse-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px solid #FF6B2B;
+  animation: ringPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+@keyframes ringPulse {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
 
 /* float */
-@keyframes floaty{0%,100%{transform:translateY(0) rotateZ(0deg)}50%{transform:translateY(-12px) rotateZ(.5deg)}}
-.floaty{animation:floaty 6s ease-in-out infinite}
+@keyframes floaty { 0%,100%{transform:translateY(0) rotateZ(0deg)} 50%{transform:translateY(-10px) rotateZ(.5deg)} }
+.floaty { animation: floaty 6s ease-in-out infinite; }
 
-/* ═══ photo flip card ═══ */
-.flip-card{perspective:1600px}
-.flip-inner{position:relative;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.4,0,.2,1)}
-.flip-card:hover .flip-inner{transform:rotateY(180deg)}
-.flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.flip-back{transform:rotateY(180deg)}
+/* photo flip card */
+.flip-card { perspective: 1600px; max-width: 100%; }
+.flip-inner { position: relative; transform-style: preserve-3d; transition: transform .9s cubic-bezier(.4,0,.2,1); }
+.flip-card:hover .flip-inner { transform: rotateY(180deg); }
+.flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }
 
-/* ═══ checkmark success animation ═══ */
-.check-circle{stroke-dasharray:151;stroke-dashoffset:151;animation:drawCircle .6s ease forwards}
-.check-mark{stroke-dasharray:36;stroke-dashoffset:36;animation:drawCheck .35s .55s ease forwards}
-@keyframes drawCircle{to{stroke-dashoffset:0}}
-@keyframes drawCheck{to{stroke-dashoffset:0}}
+/* checkmark success */
+.check-circle { stroke-dasharray: 151; stroke-dashoffset: 151; animation: drawCircle .6s ease forwards; }
+.check-mark { stroke-dasharray: 36; stroke-dashoffset: 36; animation: drawCheck .35s .55s ease forwards; }
+@keyframes drawCircle { to { stroke-dashoffset:0 } }
+@keyframes drawCheck { to { stroke-dashoffset:0 } }
 
-/* ═══ light theme overrides ═══ */
-html.light .text-zinc-100{color:#18181b !important}
-html.light .text-zinc-200{color:#27272a !important}
-html.light .text-zinc-300{color:#3f3f46 !important}
-html.light .text-zinc-400{color:#52525b !important}
-html.light .text-zinc-500{color:#71717a !important}
-html.light .text-zinc-600{color:#8a8a94 !important}
-html.light .text-white{color:#18181b !important}
-html.light .border-white\/5{border-color:rgba(0,0,0,.07) !important}
-html.light .border-white\/10{border-color:rgba(0,0,0,.1) !important}
-html.light .border-white\/15{border-color:rgba(0,0,0,.14) !important}
-html.light .bg-white\/5{background-color:rgba(0,0,0,.035) !important}
-html.light .glass{background:rgba(255,255,255,.66) !important;border-color:rgba(0,0,0,.08) !important}
-html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgba(255,255,255,.94)) !important}
+/* light theme overrides */
+html.light .text-zinc-100 { color: #18181b !important; }
+html.light .text-zinc-200 { color: #27272a !important; }
+html.light .text-zinc-300 { color: #3f3f46 !important; }
+html.light .text-zinc-400 { color: #52525b !important; }
+html.light .text-zinc-500 { color: #71717a !important; }
+html.light .text-zinc-600 { color: #8a8a94 !important; }
+html.light .text-white { color: #18181b !important; }
+html.light .border-white\/5 { border-color: rgba(0,0,0,.07) !important; }
+html.light .border-white\/10 { border-color: rgba(0,0,0,.1) !important; }
+html.light .border-white\/15 { border-color: rgba(0,0,0,.14) !important; }
+html.light .bg-white\/5 { background-color: rgba(0,0,0,.035) !important; }
+html.light .glass { background: rgba(255,255,255,.66) !important; border-color: rgba(0,0,0,.08) !important; }
+html.light .flip-back { background: linear-gradient(135deg,rgba(255,107,43,.16),rgba(255,255,255,.94)) !important; }
 
-[x-cloak]{display:none!important}
+[x-cloak] { display: none !important; }
 </style>
 </head>
 
-<body class="antialiased selection:bg-accent/30 selection:text-white" :class="dark ? 'bg-[#08070a] text-zinc-100' : 'bg-[#f7f5f1] text-zinc-900'">
+<body class="antialiased selection:bg-accent/30 selection:text-white max-w-full overflow-x-hidden" :class="dark ? 'bg-[#08070a] text-zinc-100' : 'bg-[#f7f5f1] text-zinc-900'">
 
-<!-- Fullsite Interactive Spider-Web Canvas -->
-<canvas id="heroCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+<!-- Fixed Interactive Spider-Web Canvas -->
+<canvas id="heroCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 max-w-full overflow-hidden"></canvas>
 
 <!-- ═══ NAV ═══ -->
-<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
+<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300 max-w-full"
   :class="sc ? (dark ? 'bg-[#08070a]/90 backdrop-blur-md shadow-lg shadow-black/20 border-b border-white/5' : 'bg-[#f7f5f1]/90 backdrop-blur-md shadow-lg shadow-black/10 border-b border-black/5') : ''">
-  <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="Main navigation">
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between" aria-label="Main navigation">
 
     <a href="#hero" class="font-display font-bold text-xl tracking-tight relative z-10">
       <span :class="dark ? 'text-white' : 'text-zinc-900'">ASHWATH</span><span class="text-accent">.N</span>
@@ -180,7 +329,7 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
   <div x-show="mm" x-cloak
     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
-    class="lg:hidden border-t border-white/5" :class="dark ? 'bg-[#08070a]' : 'bg-[#f7f5f1]'">
+    class="lg:hidden border-t border-white/5 max-w-full" :class="dark ? 'bg-[#08070a]' : 'bg-[#f7f5f1]'">
     <ul class="flex flex-col px-6 py-4 gap-4 text-sm" role="list">
       <li><a @click="mm=false" href="#about" class="text-zinc-300">About</a></li>
       <li><a @click="mm=false" href="#skills" class="text-zinc-300">Skills</a></li>
@@ -193,30 +342,30 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
   </div>
 </header>
 
-<main class="relative z-[1]">
+<main class="relative z-[1] max-w-full overflow-x-hidden">
 
-<!-- ═══ HERO ═══ -->
-<section id="hero" class="relative overflow-hidden pt-40 pb-28 md:pt-48 md:pb-36">
-  <div class="blob w-[420px] h-[420px] bg-accent/20 -top-32 -left-32"></div>
-  <div class="blob w-[380px] h-[380px] bg-accent/10 top-40 right-0"></div>
+<!-- ═══ HERO (SECTION 0) ═══ -->
+<section id="hero" class="sec-stage sec-active relative overflow-hidden pt-32 pb-24 md:pt-48 md:pb-36">
+  <div class="blob w-[280px] sm:w-[400px] h-[280px] sm:h-[400px] bg-accent/20 -top-20 -left-20"></div>
+  <div class="blob w-[260px] sm:w-[360px] h-[260px] sm:h-[360px] bg-accent/10 top-40 right-0"></div>
 
-  <div class="max-w-6xl mx-auto px-6 relative persp">
-    <div class="grid md:grid-cols-[1.15fr,0.85fr] gap-14 items-center">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 relative">
+    <div class="grid md:grid-cols-[1.15fr,0.85fr] gap-10 md:gap-14 items-center">
 
       <div>
-        <p class="reveal3d font-mono-x text-xs tracking-widest text-accent-light uppercase mb-5 flex items-center gap-2">
+        <p class="reveal3d font-mono-x text-xs tracking-widest text-accent-light uppercase mb-4 sm:mb-5 flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> Available for backend engineering roles
         </p>
-        <h1 class="reveal3d d1 font-display font-bold text-4xl sm:text-5xl md:text-6xl leading-[1.08] tracking-tight mb-6">
+        <h1 class="reveal3d d1 font-display font-bold text-3xl sm:text-5xl md:text-6xl leading-[1.1] tracking-tight mb-5 sm:mb-6">
           Hi, I'm <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent-light">ASHWATH N</span> —
           I build backend systems that scale.
         </h1>
-        <p class="reveal3d d2 text-zinc-400 text-lg leading-relaxed max-w-xl mb-8">
+        <p class="reveal3d d2 text-zinc-400 text-base sm:text-lg leading-relaxed max-w-xl mb-6 sm:mb-8">
           Python Backend Developer specializing in <span :class="dark?'text-white':'text-zinc-900'">FastAPI</span> and
           <span :class="dark?'text-white':'text-zinc-900'">REST API</span> engineering. I design clean architectures, integrate
           databases, and ship secure, maintainable systems that power real products.
         </p>
-        <div class="reveal3d d3 flex flex-wrap items-center gap-4">
+        <div class="reveal3d d3 flex flex-wrap items-center gap-3 sm:gap-4">
           <a href="#projects" class="shimmer bg-accent text-white font-medium text-sm px-6 py-3.5 rounded-full hover:bg-accent-light transition-colors inline-flex items-center gap-2">
             View my work <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </a>
@@ -228,7 +377,7 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
           </a>
         </div>
 
-        <div class="reveal3d d4 flex items-center gap-6 mt-10 text-zinc-500">
+        <div class="reveal3d d4 flex items-center gap-6 mt-8 sm:mt-10 text-zinc-500">
           <a href="https://github.com/ashwath613" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="hover:text-accent-light transition-colors">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
           </a>
@@ -242,31 +391,31 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
       </div>
 
       <!-- photo flip card -->
-      <div class="reveal3d d2 from-right relative floaty">
-        <div class="flip-card glass rounded-3xl p-3 shadow-2xl shadow-black/50 max-w-sm mx-auto">
+      <div class="reveal3d d2 from-right relative floaty max-w-full">
+        <div class="flip-card glass rounded-3xl p-3 shadow-2xl shadow-black/50 max-w-xs sm:max-w-sm mx-auto">
           <div class="flip-inner aspect-[4/5] rounded-2xl">
             <div class="flip-face rounded-2xl overflow-hidden relative">
 
-    <!-- Transparent PNG -->
-    <img src="./photo.png"
-     alt="Ashwath N"
-     class="w-full h-full object-contain"
-     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <!-- Transparent PNG -->
+              <img src="./photo.png"
+               alt="Ashwath N"
+               class="w-full h-full object-contain"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
 
-    <!-- Placeholder -->
-    <div class="absolute inset-0 hidden flex-col items-center justify-center text-zinc-600 gap-3 px-8 text-center">
-        <svg class="w-14 h-14 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-        </svg>
+              <!-- Placeholder -->
+              <div class="absolute inset-0 hidden flex-col items-center justify-center text-zinc-600 gap-3 px-8 text-center">
+                  <svg class="w-14 h-14 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
 
-        <p class="text-xs text-zinc-500">
-            Add your transparent image as
-            <span class="font-mono text-accent">photo.png</span>
-        </p>
-    </div>
+                  <p class="text-xs text-zinc-500">
+                      Add your transparent image as
+                      <span class="font-mono text-accent">photo.png</span>
+                  </p>
+              </div>
 
-</div>
+            </div>
             <div class="flip-face flip-back rounded-2xl p-6 flex flex-col justify-center bg-gradient-to-br from-accent/25 via-black to-black">
               <p class="font-mono-x text-[11px] text-accent-light uppercase tracking-widest mb-3">Quick intro</p>
               <p class="text-zinc-200 text-sm leading-relaxed">Turning complex requirements into clean, scalable backend systems. I design FastAPI services, secure REST APIs, and databases that hold up under real traffic.</p>
@@ -275,11 +424,11 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
                 <span class="text-[11px] border border-white/15 rounded-full px-2.5 py-1 text-zinc-300">PostgreSQL</span>
                 <span class="text-[11px] border border-white/15 rounded-full px-2.5 py-1 text-zinc-300">Docker</span>
               </div>
-              <p class="text-[11px] text-zinc-500 mt-5">Hover to flip back →</p>
+              <p class="text-[11px] text-zinc-500 mt-5">Hover / tap to flip back →</p>
             </div>
           </div>
         </div>
-        <div class="glass rounded-xl px-4 py-3 absolute -bottom-6 -left-6 hidden sm:flex items-center gap-3 shadow-xl shadow-black/40 z-10">
+        <div class="glass rounded-xl px-4 py-3 absolute -bottom-6 left-0 sm:-left-6 hidden sm:flex items-center gap-3 shadow-xl shadow-black/40 z-10">
           <span class="w-2.5 h-2.5 rounded-full bg-accent animate-pulse"></span>
           <div class="text-xs text-zinc-400 leading-tight">Open to work<br><span :class="dark?'text-white':'text-zinc-900'" class="font-medium">Backend Engineering</span></div>
         </div>
@@ -289,15 +438,15 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
   </div>
 </section>
 
-<!-- ═══ ABOUT ═══ -->
-<section id="about" class="relative py-24 md:py-32 border-t border-white/5 persp">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="grid md:grid-cols-[0.7fr,1.3fr] gap-12">
+<!-- ═══ ABOUT (SECTION 1) ═══ -->
+<section id="about" class="sec-stage sec-below relative py-20 md:py-32 border-t border-white/5 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid md:grid-cols-[0.7fr,1.3fr] gap-8 md:gap-12">
       <div class="reveal3d from-left">
         <p class="font-mono-x text-xs tracking-widest text-accent-light uppercase mb-3">01 · About</p>
-        <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">Engineering reliable systems, one endpoint at a time.</h2>
+        <h2 class="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">Engineering reliable systems, one endpoint at a time.</h2>
       </div>
-      <div class="reveal3d d1 space-y-5 text-zinc-400 leading-relaxed text-[15px] md:text-base">
+      <div class="reveal3d d1 space-y-4 sm:space-y-5 text-zinc-400 leading-relaxed text-sm sm:text-base">
         <p>I'm a passionate Python Backend Developer with a strong interest in designing scalable backend systems and building high-performance APIs that solve real-world problems. I specialize in developing RESTful APIs with FastAPI, designing clean backend architectures, integrating databases, and creating secure, maintainable applications.</p>
         <p>I enjoy transforming complex business requirements into efficient backend solutions through well-structured code and thoughtful system design. My hands-on experience includes API development, endpoint design, database integration, authentication, testing, debugging, and performance optimization.</p>
         <p>I continuously expand my knowledge by exploring modern backend technologies, refining my problem-solving skills, and building practical projects that demonstrate real engineering principles. I believe great backend development isn't just about writing code — it's about creating reliable, scalable, and efficient systems that power exceptional user experiences.</p>
@@ -306,26 +455,26 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
   </div>
 </section>
 
-<!-- ═══ SKILLS ═══ -->
-<section id="skills" class="relative py-24 md:py-32 border-t border-white/5 persp">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="reveal3d max-w-2xl mb-14">
+<!-- ═══ SKILLS (SECTION 2) ═══ -->
+<section id="skills" class="sec-stage sec-below relative py-20 md:py-32 border-t border-white/5 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="reveal3d max-w-2xl mb-10 sm:mb-14">
       <p class="font-mono-x text-xs tracking-widest text-accent-light uppercase mb-3">02 · Skills</p>
-      <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">A toolkit built for production backend work.</h2>
+      <h2 class="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">A toolkit built for production backend work.</h2>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-6">
+    <div class="grid sm:grid-cols-2 gap-4 sm:gap-6">
 
-      <div class="reveal3d tilt glass rounded-2xl p-6">
-        <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Programming Languages</h3>
+      <div class="reveal3d tilt glass rounded-2xl p-5 sm:p-6">
+        <h3 class="font-display font-semibold text-base sm:text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Programming Languages</h3>
         <div class="flex flex-wrap gap-2">
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">Python</span>
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">SQL</span>
         </div>
       </div>
 
-      <div class="reveal3d d1 tilt glass rounded-2xl p-6">
-        <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Backend Development</h3>
+      <div class="reveal3d d1 tilt glass rounded-2xl p-5 sm:p-6">
+        <h3 class="font-display font-semibold text-base sm:text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Backend Development</h3>
         <div class="flex flex-wrap gap-2">
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">FastAPI</span>
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">REST API Development</span>
@@ -338,8 +487,8 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
         </div>
       </div>
 
-      <div class="reveal3d d1 tilt glass rounded-2xl p-6">
-        <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Database</h3>
+      <div class="reveal3d d1 tilt glass rounded-2xl p-5 sm:p-6">
+        <h3 class="font-display font-semibold text-base sm:text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Database</h3>
         <div class="flex flex-wrap gap-2">
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">MySQL</span>
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">PostgreSQL</span>
@@ -347,8 +496,8 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
         </div>
       </div>
 
-      <div class="reveal3d d2 tilt glass rounded-2xl p-6">
-        <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Authentication &amp; Security</h3>
+      <div class="reveal3d d2 tilt glass rounded-2xl p-5 sm:p-6">
+        <h3 class="font-display font-semibold text-base sm:text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Authentication &amp; Security</h3>
         <div class="flex flex-wrap gap-2">
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">JWT Authentication</span>
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">OAuth2</span>
@@ -356,8 +505,8 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
         </div>
       </div>
 
-      <div class="reveal3d d2 tilt glass rounded-2xl p-6 md:col-span-2">
-        <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Tools &amp; Technologies</h3>
+      <div class="reveal3d d2 tilt glass rounded-2xl p-5 sm:p-6 sm:col-span-2">
+        <h3 class="font-display font-semibold text-base sm:text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Tools &amp; Technologies</h3>
         <div class="flex flex-wrap gap-2">
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">Docker</span>
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">Git</span>
@@ -370,8 +519,8 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
         </div>
       </div>
 
-      <div class="reveal3d d3 tilt glass rounded-2xl p-6">
-        <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Core Concepts</h3>
+      <div class="reveal3d d3 tilt glass rounded-2xl p-5 sm:p-6">
+        <h3 class="font-display font-semibold text-base sm:text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Core Concepts</h3>
         <div class="flex flex-wrap gap-2">
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">Database Design</span>
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">OOP</span>
@@ -383,8 +532,8 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
         </div>
       </div>
 
-      <div class="reveal3d d3 tilt glass rounded-2xl p-6">
-        <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Soft Skills</h3>
+      <div class="reveal3d d3 tilt glass rounded-2xl p-5 sm:p-6">
+        <h3 class="font-display font-semibold text-base sm:text-lg mb-4 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Soft Skills</h3>
         <div class="flex flex-wrap gap-2">
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">Analytical Thinking</span>
           <span class="stag text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-300">Team Collaboration</span>
@@ -397,67 +546,77 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
   </div>
 </section>
 
-<!-- ═══ EXPERIENCE ═══ -->
-<section id="experience" class="relative py-24 md:py-32 border-t border-white/5 persp">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="reveal3d max-w-2xl mb-14">
+<!-- ═══ EXPERIENCE (SECTION 3) ═══ -->
+<section id="experience" class="sec-stage sec-below relative py-20 md:py-32 border-t border-white/5 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="reveal3d max-w-2xl mb-10 sm:mb-14">
       <p class="font-mono-x text-xs tracking-widest text-accent-light uppercase mb-3">03 · Experience</p>
-      <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">Experience</h2>
+      <h2 class="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">Experience</h2>
     </div>
 
-    <div class="reveal3d d1 tilt glass rounded-2xl p-8 md:p-10 max-w-3xl">
-      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+    <div class="reveal3d d1 tilt glass rounded-2xl p-6 sm:p-8 md:p-10 max-w-3xl">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
         <div>
-          <h3 class="font-display font-semibold text-2xl" :class="dark?'text-white':'text-zinc-900'">Python Backend Developer Intern</h3>
+          <h3 class="font-display font-semibold text-xl sm:text-2xl" :class="dark?'text-white':'text-zinc-900'">Python Backend Developer Intern</h3>
           <p class="text-sm text-accent-light mt-1">LITZ Tech, Coimbatore</p>
         </div>
         <span class="font-mono-x text-xs border border-white/10 rounded-full px-3 py-1.5 text-zinc-400 shrink-0">Internship</span>
       </div>
-      <p class="text-zinc-400 leading-relaxed text-[15px]">Worked as a Python Backend Developer Intern on a real-world production project with a team of five developers. Built scalable REST API endpoints using FastAPI, integrated backend services, managed database operations using SQLAlchemy, and tested APIs using Postman. Collaborated with developers to debug production issues, improve backend reliability, optimize API performance, and ensure smooth data flow between services. Gained practical experience writing clean, maintainable backend code while contributing to production-ready applications.</p>
+      <p class="text-zinc-400 leading-relaxed text-sm sm:text-[15px]">Worked as a Python Backend Developer Intern on a real-world production project with a team of five developers. Built scalable REST API endpoints using FastAPI, integrated backend services, managed database operations using SQLAlchemy, and tested APIs using Postman. Collaborated with developers to debug production issues, improve backend reliability, optimize API performance, and ensure smooth data flow between services. Gained practical experience writing clean, maintainable backend code while contributing to production-ready applications.</p>
     </div>
   </div>
 </section>
 
-<!-- ═══ EDUCATION ═══ -->
-<section id="education" class="relative py-24 md:py-32 border-t border-white/5 persp">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="reveal3d max-w-2xl mb-14">
+<!-- ═══ EDUCATION (SECTION 4) ═══ -->
+<section id="education" class="sec-stage sec-below relative py-20 md:py-32 border-t border-white/5 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="reveal3d max-w-2xl mb-10 sm:mb-14">
       <p class="font-mono-x text-xs tracking-widest text-accent-light uppercase mb-3">04 · Education</p>
-      <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">Education</h2>
+      <h2 class="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">Education Journey</h2>
     </div>
 
-    <div class="relative pl-10 md:pl-12">
-      <div class="tl-line absolute left-[7px] md:left-[9px] top-1 bottom-1 w-px"></div>
-
-      <div class="reveal3d from-left relative mb-12">
-        <span class="ring-bg absolute -left-10 md:-left-12 top-1 w-4 h-4 rounded-full bg-accent shadow shadow-accent/50 ring-4"></span>
-        <p class="font-mono-x text-xs text-accent-light mb-1">Sep 2023 – Jun 2027</p>
-        <h3 class="font-display font-semibold text-xl" :class="dark?'text-white':'text-zinc-900'">B.Tech, Artificial Intelligence and Data Science</h3>
-        <p class="text-sm text-zinc-500">Dr. Mahalingam College of Engineering and Technology · CGPA 8.05</p>
+    <div class="relative pl-8 sm:pl-12 max-w-3xl">
+      <!-- Animated Timeline vertical line with traveler dot -->
+      <div class="tl-line absolute left-[9px] sm:left-[11px] top-3 bottom-3 w-[2px] rounded-full overflow-visible">
+        <!-- Bright glowing orange animated dot rising smoothly from School to College -->
+        <div class="edu-traveler-dot"></div>
       </div>
 
+      <!-- COLLEGE (Current Education Node - Top Target) -->
+      <div class="reveal3d from-left relative mb-12 sm:mb-16">
+        <span class="ring-bg absolute -left-8 sm:-left-12 top-1.5 w-4 h-4 rounded-full bg-accent shadow-lg shadow-accent/80 ring-4 relative z-10">
+          <span class="college-pulse-ring"></span>
+        </span>
+        <p class="font-mono-x text-xs text-accent-light mb-1">Sep 2023 – Jun 2027 · Current Education</p>
+        <h3 class="font-display font-semibold text-lg sm:text-xl" :class="dark?'text-white':'text-zinc-900'">B.Tech, Artificial Intelligence and Data Science</h3>
+        <p class="text-sm text-zinc-400 mt-1">Dr. Mahalingam College of Engineering and Technology</p>
+        <p class="text-xs text-zinc-500 font-mono-x mt-1">CGPA: 8.05</p>
+      </div>
+
+      <!-- SCHOOL (Origin Education Node - Bottom Starting Point) -->
       <div class="reveal3d d1 from-left relative">
-        <span class="ring-bg absolute -left-10 md:-left-12 top-1 w-4 h-4 rounded-full bg-zinc-600 ring-4"></span>
-        <p class="font-mono-x text-xs text-accent-light mb-1">Higher Secondary</p>
-        <h3 class="font-display font-semibold text-xl" :class="dark?'text-white':'text-zinc-900'">Sri Lathangi Vidhya Mandhir Higher Secondary School</h3>
-        <p class="text-sm text-zinc-500">86.33%</p>
+        <span class="ring-bg absolute -left-8 sm:-left-12 top-1.5 w-4 h-4 rounded-full bg-accent/60 ring-4 relative z-10 shadow-md shadow-accent/40"></span>
+        <p class="font-mono-x text-xs text-accent-light mb-1">Higher Secondary · Schooling</p>
+        <h3 class="font-display font-semibold text-lg sm:text-xl" :class="dark?'text-white':'text-zinc-900'">Sri Lathangi Vidhya Mandhir Higher Secondary School</h3>
+        <p class="text-sm text-zinc-400 mt-1">School Education Completed</p>
+        <p class="text-xs text-zinc-500 font-mono-x mt-1">Percentage: 86.33%</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ PROJECTS ═══ -->
-<section id="projects" class="relative py-24 md:py-32 border-t border-white/5 persp">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="reveal3d max-w-2xl mb-14">
+<!-- ═══ PROJECTS (SECTION 5) ═══ -->
+<section id="projects" class="sec-stage sec-below relative py-20 md:py-32 border-t border-white/5 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="reveal3d max-w-2xl mb-10 sm:mb-14">
       <p class="font-mono-x text-xs tracking-widest text-accent-light uppercase mb-3">05 · Projects</p>
-      <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">Selected projects &amp; systems I've built.</h2>
+      <h2 class="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">Selected projects &amp; systems I've built.</h2>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
 
-      <div class="reveal3d tilt glass rounded-2xl p-6 flex flex-col">
-        <h3 class="font-display font-semibold text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Automated Test Metrics Analyzer</h3>
+      <div class="reveal3d tilt glass rounded-2xl p-5 sm:p-6 flex flex-col">
+        <h3 class="font-display font-semibold text-lg sm:text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Automated Test Metrics Analyzer</h3>
         <p class="text-zinc-400 text-sm leading-relaxed mb-5 flex-1">Backend application that automates analysis of Selenium-generated test result CSVs using predefined rule-based formulas. Built RESTful APIs with FastAPI and Pandas to process test execution data and generate meaningful QA metrics — cutting manual testing effort significantly.</p>
         <div class="flex flex-wrap gap-1.5 mb-5">
           <span class="text-[11px] border border-white/10 rounded-full px-2.5 py-1 text-zinc-400">Python</span>
@@ -472,8 +631,8 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
         </a>
       </div>
 
-      <div class="reveal3d d1 tilt glass rounded-2xl p-6 flex flex-col">
-        <h3 class="font-display font-semibold text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Agri Scan AI</h3>
+      <div class="reveal3d d1 tilt glass rounded-2xl p-5 sm:p-6 flex flex-col">
+        <h3 class="font-display font-semibold text-lg sm:text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Agri Scan AI</h3>
         <p class="text-zinc-400 text-sm leading-relaxed mb-5 flex-1">AI-powered crop disease detection system that identifies infected plant leaves at an early stage. Implemented deep learning with TensorFlow and EfficientNetB0, achieving ~92% classification accuracy across multiple crop types — helping farmers make smarter agricultural decisions.</p>
         <div class="flex flex-wrap gap-1.5 mb-5">
           <span class="text-[11px] border border-white/10 rounded-full px-2.5 py-1 text-zinc-400">Python</span>
@@ -487,8 +646,8 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
         </a>
       </div>
 
-      <div class="reveal3d d2 tilt glass rounded-2xl p-6 flex flex-col">
-        <h3 class="font-display font-semibold text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Leave Mate</h3>
+      <div class="reveal3d d2 tilt glass rounded-2xl p-5 sm:p-6 flex flex-col">
+        <h3 class="font-display font-semibold text-lg sm:text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Leave Mate</h3>
         <p class="text-zinc-400 text-sm leading-relaxed mb-5 flex-1">Multi-level leave management system with secure approval workflows and real-time leave tracking. Built the backend using Python and MySQL, implementing secure data handling, faculty approval workflows, and an efficient process that simplifies leave requests and approvals.</p>
         <div class="flex flex-wrap gap-1.5 mb-5">
           <span class="text-[11px] border border-white/10 rounded-full px-2.5 py-1 text-zinc-400">Python</span>
@@ -505,19 +664,19 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
   </div>
 </section>
 
-<!-- ═══ ACHIEVEMENTS ═══ -->
-<section id="achievements" class="relative py-24 md:py-32 border-t border-white/5 persp">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="reveal3d max-w-2xl mb-14">
+<!-- ═══ ACHIEVEMENTS (SECTION 6) ═══ -->
+<section id="achievements" class="sec-stage sec-below relative py-20 md:py-32 border-t border-white/5 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="reveal3d max-w-2xl mb-10 sm:mb-14">
       <p class="font-mono-x text-xs tracking-widest text-accent-light uppercase mb-3">06 · Recognition</p>
-      <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight">Achievements</h2>
+      <h2 class="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">Achievements</h2>
     </div>
 
-    <div class="reveal3d zoom-out tilt glass rounded-2xl p-8 md:p-10 max-w-3xl">
+    <div class="reveal3d zoom-out tilt glass rounded-2xl p-6 sm:p-8 md:p-10 max-w-3xl">
       <div class="w-11 h-11 rounded-lg bg-accent/15 flex items-center justify-center mb-5">
         <svg class="w-5 h-5 text-accent-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
       </div>
-      <ul class="space-y-3 text-[15px] text-zinc-300">
+      <ul class="space-y-3 text-sm sm:text-[15px] text-zinc-300">
         <li class="flex gap-3"><span class="text-accent-light">▸</span> Top 150 Rank (All India) in Amazon ML Challenge 2025</li>
         <li class="flex gap-3"><span class="text-accent-light">▸</span> Solved 300+ problems on LeetCode</li>
         <li class="flex gap-3"><span class="text-accent-light">▸</span> Earned a 100-Day Coding Streak on LeetCode</li>
@@ -527,15 +686,15 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
   </div>
 </section>
 
-<!-- ═══ CONTACT ═══ -->
-<section id="contact" class="relative py-24 md:py-32 border-t border-white/5 persp">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="grid md:grid-cols-2 gap-14">
+<!-- ═══ CONTACT (SECTION 7) ═══ -->
+<section id="contact" class="sec-stage sec-below relative py-20 md:py-32 border-t border-white/5 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid md:grid-cols-2 gap-10 md:gap-14">
 
       <div>
         <p class="reveal3d from-left font-mono-x text-xs tracking-widest text-accent-light uppercase mb-3">07 · Contact</p>
-        <h2 class="reveal3d from-left d1 font-display font-bold text-4xl md:text-5xl leading-tight mb-5">Let's build<br>something together</h2>
-        <p class="reveal3d from-left d2 text-zinc-400 leading-relaxed mb-8 max-w-md">I'm open to backend engineering roles and internships. Whether it's an API to design, a system to scale, or just a conversation about clean architecture — let's talk.</p>
+        <h2 class="reveal3d from-left d1 font-display font-bold text-3xl sm:text-4xl md:text-5xl leading-tight mb-5">Let's build<br>something together</h2>
+        <p class="reveal3d from-left d2 text-zinc-400 leading-relaxed mb-8 max-w-md text-sm sm:text-base">I'm open to backend engineering roles and internships. Whether it's an API to design, a system to scale, or just a conversation about clean architecture — let's talk.</p>
 
         <div class="reveal3d from-left d3 flex flex-col gap-4">
           <a href="mailto:nashwath613@gmail.com" class="group flex items-center gap-3 text-zinc-400 hover:text-accent-light transition-colors">
@@ -632,7 +791,7 @@ html.light .flip-back{background:linear-gradient(135deg,rgba(255,107,43,.16),rgb
 
         <div x-show="sent" x-cloak
           x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
-          class="glass rounded-2xl p-10 flex flex-col items-center text-center gap-3">
+          class="glass rounded-2xl p-8 sm:p-10 flex flex-col items-center text-center gap-3">
           <svg class="w-16 h-16" viewBox="0 0 52 52" fill="none" aria-hidden="true">
             <circle class="check-circle" cx="26" cy="26" r="24" stroke="#FF6B2B" stroke-width="2.5"/>
             <path class="check-mark" d="M15 27l7 7 15-15" stroke="#FF8F5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -669,15 +828,50 @@ function app() {
         this.updateSection();
       }, { passive: true });
 
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-      }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-      document.querySelectorAll('.reveal3d').forEach(el => io.observe(el));
+      // Observer for inner card 3D elements
+      const ioCard = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ioCard.unobserve(e.target); } });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal3d').forEach(el => ioCard.observe(el));
+
+      // Observer for 3D Section Zoom-In / Zoom-Out transitions (works on mobile & desktop)
+      this.init3DSectionZoomSystem();
 
       document.getElementById('yr').textContent = new Date().getFullYear();
 
       initTilt();
       initParticleWeb();
+    },
+
+    init3DSectionZoomSystem() {
+      const sections = document.querySelectorAll('.sec-stage');
+      const secObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          const el = entry.target;
+          const rect = entry.boundingClientRect;
+          if (entry.isIntersecting) {
+            el.classList.add('sec-active');
+            el.classList.remove('sec-above', 'sec-below');
+          } else {
+            el.classList.remove('sec-active');
+            if (rect.top < 0) {
+              // Section scrolled past (above) -> Zoom Out + Fade Out upwards
+              el.classList.add('sec-above');
+              el.classList.remove('sec-below');
+            } else {
+              // Section below viewport -> Zoom Out + Fade Out downwards
+              el.classList.add('sec-below');
+              el.classList.remove('sec-above');
+            }
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: '-8% 0px -8% 0px',
+        threshold: [0, 0.15, 0.5, 0.85]
+      });
+
+      sections.forEach(sec => secObserver.observe(sec));
     },
 
     updateSection() {
@@ -700,20 +894,22 @@ function app() {
 
 /* rotate3d-driven mouse tilt for cards */
 function initTilt() {
-  document.querySelectorAll('.tilt').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
-      card.style.transform = `perspective(900px) rotate3d(${-py * 2}, ${px * 2}, 0, 9deg) scale3d(1.02,1.02,1.02)`;
+  if (window.matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll('.tilt').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `perspective(900px) rotate3d(${-py * 2}, ${px * 2}, 0, 9deg) scale3d(1.02,1.02,1.02)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(900px) rotate3d(0,0,0,0deg) scale3d(1,1,1)';
+      });
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(900px) rotate3d(0,0,0,0deg) scale3d(1,1,1)';
-    });
-  });
+  }
 }
 
-/* anti-gravity particle web — viewport wide, stays fixed behind content across all sections during scrolling */
+/* anti-gravity particle web background */
 function initParticleWeb() {
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
@@ -724,14 +920,14 @@ function initParticleWeb() {
   const mouse = { x: -9999, y: -9999 };
 
   function resize() {
-    w = window.innerWidth;
+    w = Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
     h = window.innerHeight;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     canvas.style.width = w + 'px';
     canvas.style.height = h + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const count = Math.max(50, Math.min(120, Math.round((w * h) / 15000)));
+    const count = Math.max(35, Math.min(85, Math.round((w * h) / 18000)));
     particles = Array.from({ length: count }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
