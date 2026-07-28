@@ -16,6 +16,7 @@
 <title>Ashwath N — Python Backend Developer &amp; FastAPI Engineer</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -398,6 +399,7 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
     </a>
 
     <ul class="hidden lg:flex items-center gap-6 text-sm" role="list">
+      <li><a href="#hero"       class="nl text-zinc-400 hover:text-accent-light transition-colors" :class="s==='hero'?'on !text-accent-light':''">Home</a></li>
       <li><a href="#about"      class="nl text-zinc-400 hover:text-accent-light transition-colors" :class="s==='about'?'on !text-accent-light':''">About</a></li>
       <li><a href="#skills"     class="nl text-zinc-400 hover:text-accent-light transition-colors" :class="s==='skills'?'on !text-accent-light':''">Skills</a></li>
       <li><a href="#experience" class="nl text-zinc-400 hover:text-accent-light transition-colors" :class="s==='experience'?'on !text-accent-light':''">Experience</a></li>
@@ -427,6 +429,7 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
     class="lg:hidden border-t border-white/5 max-w-full" :class="dark ? 'bg-[#08070a]' : 'bg-[#f7f5f1]'">
     <ul class="flex flex-col px-6 py-4 gap-4 text-sm" role="list">
+      <li><a @click="mm=false" href="#hero" class="text-zinc-300">Home</a></li>
       <li><a @click="mm=false" href="#about" class="text-zinc-300">About</a></li>
       <li><a @click="mm=false" href="#skills" class="text-zinc-300">Skills</a></li>
       <li><a @click="mm=false" href="#experience" class="text-zinc-300">Experience</a></li>
@@ -551,10 +554,12 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
         <div class="sec-eyebrow"><span class="num">01</span><span class="lbl">About</span></div>
         <h2 class="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">Engineering reliable systems, one endpoint at a time.</h2>
       </div>
-      <div class="reveal3d d1 space-y-4 sm:space-y-5 text-zinc-400 leading-relaxed text-sm sm:text-base">
-        <p>I'm a passionate Python Backend Developer with a strong interest in designing scalable backend systems and building high-performance APIs that solve real-world problems. I specialize in developing RESTful APIs with FastAPI, designing clean backend architectures, integrating databases, and creating secure, maintainable applications.</p>
-        <p>I enjoy transforming complex business requirements into efficient backend solutions through well-structured code and thoughtful system design. My hands-on experience includes API development, endpoint design, database integration, authentication, testing, debugging, and performance optimization.</p>
-        <p>I continuously expand my knowledge by exploring modern backend technologies, refining my problem-solving skills, and building practical projects that demonstrate real engineering principles. I believe great backend development isn't just about writing code — it's about creating reliable, scalable, and efficient systems that power exceptional user experiences.</p>
+      <div class="reveal3d d1">
+        <div class="tilt glass rounded-2xl p-6 sm:p-8 space-y-4 sm:space-y-5 text-zinc-400 leading-relaxed text-sm sm:text-base">
+          <p>I'm a passionate Python Backend Developer with a strong interest in designing scalable backend systems and building high-performance APIs that solve real-world problems. I specialize in developing RESTful APIs with FastAPI, designing clean backend architectures, integrating databases, and creating secure, maintainable applications.</p>
+          <p>I enjoy transforming complex business requirements into efficient backend solutions through well-structured code and thoughtful system design. My hands-on experience includes API development, endpoint design, database integration, authentication, testing, debugging, and performance optimization.</p>
+          <p>I continuously expand my knowledge by exploring modern backend technologies, refining my problem-solving skills, and building practical projects that demonstrate real engineering principles. I believe great backend development isn't just about writing code — it's about creating reliable, scalable, and efficient systems that power exceptional user experiences.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -747,23 +752,15 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
     <div class="grid md:grid-cols-3 gap-6">
 
       <div class="reveal3d tilt glass rounded-2xl p-5 sm:p-6 flex flex-col overflow-hidden">
-        <div class="rounded-xl h-40 mb-5 -mt-1 overflow-hidden relative bg-gradient-to-br from-accent/20 via-black/40 to-black/10">
-          <svg viewBox="0 0 300 160" class="w-full h-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <rect x="60" y="24" width="180" height="104" rx="8" fill="none" stroke="#FF8F5C" stroke-width="2" opacity=".85"/>
-            <rect x="60" y="24" width="180" height="18" rx="8" fill="#FF6B2B" opacity=".25"/>
-            <circle cx="70" cy="33" r="2.4" fill="#FF6B2B"/>
-            <circle cx="78" cy="33" r="2.4" fill="#FF8F5C"/>
-            <circle cx="86" cy="33" r="2.4" fill="#FF8F5C" opacity=".5"/>
-            <line x1="80" y1="112" x2="80" y2="80" stroke="#FF6B2B" stroke-width="8" stroke-linecap="round"/>
-            <line x1="100" y1="112" x2="100" y2="64" stroke="#FF8F5C" stroke-width="8" stroke-linecap="round"/>
-            <line x1="120" y1="112" x2="120" y2="92" stroke="#FF6B2B" stroke-width="8" stroke-linecap="round" opacity=".8"/>
-            <line x1="140" y1="112" x2="140" y2="72" stroke="#FF8F5C" stroke-width="8" stroke-linecap="round"/>
-            <polyline points="158,100 178,76 196,88 216,58" fill="none" stroke="#FFFFFF" stroke-width="2" opacity=".7"/>
-            <circle cx="216" cy="58" r="3.5" fill="#FFFFFF" opacity=".9"/>
-            <circle cx="196" cy="108" r="20" fill="none" stroke="#FF6B2B" stroke-width="2.5" opacity=".9"/>
-            <line x1="210" y1="122" x2="222" y2="134" stroke="#FF6B2B" stroke-width="3" stroke-linecap="round"/>
-            <path d="M186 108 l6 6 12 -14" fill="none" stroke="#FF8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+        <div class="rounded-xl h-40 mb-5 -mt-1 overflow-hidden relative bg-white/5 border border-dashed border-white/15 flex items-center justify-center">
+          <img src="./photo2.png" alt="Project preview" class="w-full h-full object-cover"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="absolute inset-0 hidden flex-col items-center justify-center gap-2 text-center px-4">
+            <svg class="w-7 h-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16l5-5 4 4 3-3 6 6M4 5h16v14H4z"/></svg>
+            <span class="text-[11px] font-mono-x text-zinc-500 uppercase tracking-widest">Add image as</span>
+            <span class="text-[12px] font-mono-x text-accent">photo2.png</span>
+          </div>
+          <span class="absolute top-2 right-2 z-10 text-[10px] font-mono-x px-2 py-1 rounded-md bg-black/60 border border-accent/40 text-accent-light">photo2.png</span>
         </div>
         <h3 class="font-display font-semibold text-lg sm:text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Automated Test Metrics Analyzer</h3>
         <p class="text-zinc-400 text-sm leading-relaxed mb-5 flex-1">Backend application that automates analysis of Selenium-generated test result CSVs using predefined rule-based formulas. Built RESTful APIs with FastAPI and Pandas to process test execution data and generate meaningful QA metrics — cutting manual testing effort significantly.</p>
@@ -781,23 +778,15 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
       </div>
 
       <div class="reveal3d d1 tilt glass rounded-2xl p-5 sm:p-6 flex flex-col overflow-hidden">
-        <div class="rounded-xl h-40 mb-5 -mt-1 overflow-hidden relative bg-gradient-to-br from-accent/20 via-black/40 to-black/10">
-          <svg viewBox="0 0 300 160" class="w-full h-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <path d="M150 30 C110 40 90 75 100 115 C120 135 155 140 175 120 C205 90 195 45 150 30Z" fill="#FF6B2B" opacity=".22" stroke="#FF8F5C" stroke-width="2"/>
-            <path d="M150 34 C150 60 145 90 118 118" fill="none" stroke="#FF8F5C" stroke-width="2" opacity=".8"/>
-            <circle cx="128" cy="98" r="4.5" fill="#FFFFFF" opacity=".85"/>
-            <circle cx="140" cy="70" r="3" fill="#FFFFFF" opacity=".6"/>
-            <circle cx="118" cy="112" r="2.5" fill="#FFFFFF" opacity=".5"/>
-            <g opacity=".55">
-              <line x1="70" y1="45" x2="230" y2="45" stroke="#FF8F5C" stroke-width="1"/>
-              <line x1="70" y1="70" x2="230" y2="70" stroke="#FF8F5C" stroke-width="1"/>
-              <line x1="70" y1="95" x2="230" y2="95" stroke="#FF8F5C" stroke-width="1"/>
-              <line x1="70" y1="120" x2="230" y2="120" stroke="#FF8F5C" stroke-width="1"/>
-            </g>
-            <rect x="70" y="30" width="160" height="100" rx="6" fill="none" stroke="#FF6B2B" stroke-width="2"/>
-            <circle cx="215" cy="45" r="16" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity=".9"/>
-            <line x1="226" y1="56" x2="238" y2="68" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
-          </svg>
+        <div class="rounded-xl h-40 mb-5 -mt-1 overflow-hidden relative bg-white/5 border border-dashed border-white/15 flex items-center justify-center">
+          <img src="./photo3.png" alt="Project preview" class="w-full h-full object-cover"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="absolute inset-0 hidden flex-col items-center justify-center gap-2 text-center px-4">
+            <svg class="w-7 h-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16l5-5 4 4 3-3 6 6M4 5h16v14H4z"/></svg>
+            <span class="text-[11px] font-mono-x text-zinc-500 uppercase tracking-widest">Add image as</span>
+            <span class="text-[12px] font-mono-x text-accent">photo3.png</span>
+          </div>
+          <span class="absolute top-2 right-2 z-10 text-[10px] font-mono-x px-2 py-1 rounded-md bg-black/60 border border-accent/40 text-accent-light">photo3.png</span>
         </div>
         <h3 class="font-display font-semibold text-lg sm:text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Agri Scan AI</h3>
         <p class="text-zinc-400 text-sm leading-relaxed mb-5 flex-1">AI-powered crop disease detection system that identifies infected plant leaves at an early stage. Implemented deep learning with TensorFlow and EfficientNetB0, achieving ~92% classification accuracy across multiple crop types — helping farmers make smarter agricultural decisions.</p>
@@ -814,24 +803,15 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
       </div>
 
       <div class="reveal3d d2 tilt glass rounded-2xl p-5 sm:p-6 flex flex-col overflow-hidden">
-        <div class="rounded-xl h-40 mb-5 -mt-1 overflow-hidden relative bg-gradient-to-br from-accent/20 via-black/40 to-black/10">
-          <svg viewBox="0 0 300 160" class="w-full h-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <rect x="95" y="26" width="110" height="118" rx="8" fill="none" stroke="#FF8F5C" stroke-width="2" opacity=".9"/>
-            <rect x="95" y="26" width="110" height="20" rx="8" fill="#FF6B2B" opacity=".3"/>
-            <rect x="110" y="18" width="6" height="16" rx="2" fill="#FF6B2B"/>
-            <rect x="184" y="18" width="6" height="16" rx="2" fill="#FF6B2B"/>
-            <line x1="110" y1="60" x2="190" y2="60" stroke="#FF8F5C" stroke-width="2" opacity=".7"/>
-            <line x1="110" y1="76" x2="170" y2="76" stroke="#FF8F5C" stroke-width="2" opacity=".5"/>
-            <line x1="110" y1="92" x2="180" y2="92" stroke="#FF8F5C" stroke-width="2" opacity=".5"/>
-            <circle cx="150" cy="112" r="16" fill="#08070a" stroke="#FF6B2B" stroke-width="2.5"/>
-            <path d="M143 112 l5 5 10 -11" fill="none" stroke="#FF8F5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="55" cy="60" r="14" fill="none" stroke="#FFFFFF" stroke-width="2" opacity=".75"/>
-            <path d="M42 88 q13 -12 26 0" fill="none" stroke="#FFFFFF" stroke-width="2" opacity=".65"/>
-            <circle cx="245" cy="75" r="14" fill="none" stroke="#FFFFFF" stroke-width="2" opacity=".75"/>
-            <path d="M232 103 q13 -12 26 0" fill="none" stroke="#FFFFFF" stroke-width="2" opacity=".65"/>
-            <path d="M69 62 L93 55" stroke="#FF6B2B" stroke-width="1.5" stroke-dasharray="3 4" opacity=".6"/>
-            <path d="M231 78 L207 68" stroke="#FF6B2B" stroke-width="1.5" stroke-dasharray="3 4" opacity=".6"/>
-          </svg>
+        <div class="rounded-xl h-40 mb-5 -mt-1 overflow-hidden relative bg-white/5 border border-dashed border-white/15 flex items-center justify-center">
+          <img src="./photo4.png" alt="Project preview" class="w-full h-full object-cover"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="absolute inset-0 hidden flex-col items-center justify-center gap-2 text-center px-4">
+            <svg class="w-7 h-7 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16l5-5 4 4 3-3 6 6M4 5h16v14H4z"/></svg>
+            <span class="text-[11px] font-mono-x text-zinc-500 uppercase tracking-widest">Add image as</span>
+            <span class="text-[12px] font-mono-x text-accent">photo4.png</span>
+          </div>
+          <span class="absolute top-2 right-2 z-10 text-[10px] font-mono-x px-2 py-1 rounded-md bg-black/60 border border-accent/40 text-accent-light">photo4.png</span>
         </div>
         <h3 class="font-display font-semibold text-lg sm:text-xl mb-3" :class="dark?'text-white':'text-zinc-900'">Leave Mate</h3>
         <p class="text-zinc-400 text-sm leading-relaxed mb-5 flex-1">Multi-level leave management system with secure approval workflows and real-time leave tracking. Built the backend using Python and MySQL, implementing secure data handling, faculty approval workflows, and an efficient process that simplifies leave requests and approvals.</p>
@@ -858,7 +838,12 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
       <h2 class="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">Achievements</h2>
     </div>
 
-    <div class="grid sm:grid-cols-3 gap-5 sm:gap-6">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+
+
+
+
+
 
       <div class="reveal3d tilt glass rounded-2xl p-6 sm:p-7 flex flex-col items-center text-center ach-card" data-target="150" data-suffix="">
         <svg class="ach-ring w-28 h-28 sm:w-32 sm:h-32 mb-4" viewBox="0 0 120 120">
@@ -887,6 +872,21 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
         <p class="text-sm text-zinc-300 leading-snug">Day coding streak on LeetCode</p>
       </div>
 
+      <div class="reveal3d d3 tilt glass rounded-2xl p-6 sm:p-7 flex flex-col items-center text-center ach-card ach-cert-card" data-target="5" data-suffix="+">
+        <svg class="ach-ring w-28 h-28 sm:w-32 sm:h-32 mb-4" viewBox="0 0 120 120">
+          <circle class="track" cx="60" cy="60" r="52" fill="none" stroke-width="8"/>
+          <circle class="fill" cx="60" cy="60" r="52" fill="none" stroke-width="8" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+          <text x="60" y="66" text-anchor="middle" class="ach-num font-display font-bold" :class="dark?'fill-white':'fill-zinc-900'" style="font-size:22px">0</text>
+        </svg>
+        <p class="text-sm text-zinc-300 leading-snug mb-3">Certifications</p>
+        <ul class="flex flex-col gap-1.5 text-sm text-zinc-300">
+          <li>SQL</li>
+          <li>REST API</li>
+          <li>Python</li>
+        </ul>
+      </div>
+
+
     </div>
   </div>
 </section>
@@ -894,12 +894,27 @@ svg, span, p, h1, h2, h3, h4, div, .sec-eyebrow .lbl {
 <!-- ═══ CONTACT (SECTION 7) ═══ -->
 <section id="contact" class="sec-stage sec-below relative py-20 md:py-32 border-t border-white/5 overflow-hidden">
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
-    <div class="grid md:grid-cols-2 gap-10 md:gap-14">
+
+    <div class="mb-10 md:mb-14">
+      <div class="reveal3d from-left sec-eyebrow"><span class="num">07</span><span class="lbl">Contact</span></div>
+      <h2 class="reveal3d from-left d1 font-display font-bold text-3xl sm:text-4xl md:text-5xl leading-tight mb-5">Let's build<br>something together</h2>
+      <p class="reveal3d from-left d2 text-zinc-400 leading-relaxed max-w-md text-sm sm:text-base">I'm open to backend engineering roles and internships. Whether it's an API to design, a system to scale, or just a conversation about clean architecture — let's talk.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-10 md:gap-14 items-start">
 
       <div>
-        <div class="reveal3d from-left sec-eyebrow"><span class="num">07</span><span class="lbl">Contact</span></div>
-        <h2 class="reveal3d from-left d1 font-display font-bold text-3xl sm:text-4xl md:text-5xl leading-tight mb-5">Let's build<br>something together</h2>
-        <p class="reveal3d from-left d2 text-zinc-400 leading-relaxed mb-8 max-w-md text-sm sm:text-base">I'm open to backend engineering roles and internships. Whether it's an API to design, a system to scale, or just a conversation about clean architecture — let's talk.</p>
+        <!-- 3D Interactive Globe -->
+        <div class="reveal3d relative w-full h-[380px] sm:h-[440px] mb-8 flex items-center justify-center">
+          <canvas id="globeCanvas" class="w-full h-full relative z-10 cursor-pointer"></canvas>
+          <div class="absolute bottom-2 left-1/2 -translate-x-1/2 glass px-4 py-2 rounded-full text-xs font-mono flex items-center gap-2 border border-accent/50 shadow-xl z-20 pointer-events-none">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#FF6B2B] animate-ping"></span>
+            <span class="text-[#FF6B2B] font-bold">📍</span>
+            <span class="font-extrabold" :class="dark?'text-white':'text-zinc-900'">South India (Tamil Nadu)</span>
+          </div>
+        </div>
+
+
 
         <div class="reveal3d from-left d3 flex flex-col gap-4">
           <a href="mailto:nashwath613@gmail.com" class="group flex items-center gap-3 text-zinc-400 hover:text-accent-light transition-colors">
@@ -1285,6 +1300,127 @@ function initParticleWeb() {
   }
   tick();
 }
+
+/* ═══ TRANSPARENT 3D INTERACTIVE GLOBE (THREE.JS) ═══ */
+function init3DGlobe() {
+  const canvas = document.getElementById('globeCanvas');
+  if (!canvas || typeof THREE === 'undefined') return;
+  const container = canvas.parentElement;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.z = 4.4;
+
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+
+  const globeGroup = new THREE.Group();
+  scene.add(globeGroup);
+  const radius = 1.35;
+
+  const isLightMode = () => document.documentElement.classList.contains('light');
+  const getLineColor = () => isLightMode() ? 0xc2410c : 0xFF6B2B;
+  const lineMaterial = new THREE.LineBasicMaterial({ color: getLineColor(), transparent: true, opacity: 0.65 });
+
+  const latSegments = 16;
+  for (let i = 1; i < latSegments; i++) {
+    const lat = (i / latSegments) * Math.PI - Math.PI / 2;
+    const r = radius * Math.cos(lat);
+    const y = radius * Math.sin(lat);
+    const points = [];
+    const lonSegments = 48;
+    for (let j = 0; j <= lonSegments; j++) {
+      const lon = (j / lonSegments) * Math.PI * 2;
+      points.push(new THREE.Vector3(r * Math.cos(lon), y, r * Math.sin(lon)));
+    }
+    const geom = new THREE.BufferGeometry().setFromPoints(points);
+    globeGroup.add(new THREE.Line(geom, lineMaterial));
+  }
+
+  const merSegments = 20;
+  for (let i = 0; i < merSegments; i++) {
+    const lon = (i / merSegments) * Math.PI * 2;
+    const points = [];
+    const circleSegments = 64;
+    for (let j = 0; j <= circleSegments; j++) {
+      const lat = (j / circleSegments) * Math.PI * 2;
+      points.push(new THREE.Vector3(
+        radius * Math.cos(lat) * Math.sin(lon),
+        radius * Math.sin(lat),
+        radius * Math.cos(lat) * Math.cos(lon)
+      ));
+    }
+    const geom = new THREE.BufferGeometry().setFromPoints(points);
+    globeGroup.add(new THREE.Line(geom, lineMaterial));
+  }
+
+  const outerGeom = new THREE.SphereGeometry(radius * 1.02, 24, 24);
+  const outerMat = new THREE.MeshBasicMaterial({ color: 0xFF8F5C, wireframe: true, transparent: true, opacity: 0.15 });
+  globeGroup.add(new THREE.Mesh(outerGeom, outerMat));
+
+  const lat = 11.0, lon = 77.0;
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
+  const markerX = -(radius * Math.sin(phi) * Math.cos(theta));
+  const markerY = radius * Math.cos(phi);
+  const markerZ = radius * Math.sin(phi) * Math.sin(theta);
+
+  const pinMesh = new THREE.Mesh(new THREE.SphereGeometry(0.065, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFF2200 }));
+  pinMesh.position.set(markerX, markerY, markerZ);
+  globeGroup.add(pinMesh);
+
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0xFF6B2B, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
+  const ringMesh = new THREE.Mesh(new THREE.RingGeometry(0.08, 0.15, 32), ringMat);
+  ringMesh.position.set(markerX * 1.01, markerY * 1.01, markerZ * 1.01);
+  ringMesh.lookAt(markerX * 2, markerY * 2, markerZ * 2);
+  globeGroup.add(ringMesh);
+
+  globeGroup.rotation.x = 0.35;
+  globeGroup.rotation.y = -1.2;
+  let targetRotationY = -1.2;
+  let targetRotationX = 0.35;
+
+  canvas.parentElement.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) / rect.width - 0.5;
+    const my = (e.clientY - rect.top) / rect.height - 0.5;
+    targetRotationY = mx * Math.PI * 1.6 - 1.2;
+    targetRotationX = my * Math.PI * 0.8 + 0.35;
+  });
+  canvas.parentElement.addEventListener('touchmove', e => {
+    if (e.touches.length === 1) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.touches[0].clientX - rect.left) / rect.width - 0.5;
+      const my = (e.touches[0].clientY - rect.top) / rect.height - 0.5;
+      targetRotationY = mx * Math.PI * 1.6 - 1.2;
+      targetRotationX = my * Math.PI * 0.8 + 0.35;
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', () => {
+    const width = container.clientWidth, height = container.clientHeight;
+    if (!width || !height) return;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  });
+
+  let ringScale = 1, ringGrowing = true;
+  function animate() {
+    requestAnimationFrame(animate);
+    globeGroup.rotation.y += (targetRotationY - globeGroup.rotation.y) * 0.05 + 0.002;
+    globeGroup.rotation.x += (targetRotationX - globeGroup.rotation.x) * 0.05;
+    if (ringGrowing) { ringScale += 0.015; if (ringScale >= 1.6) ringGrowing = false; }
+    else { ringScale -= 0.015; if (ringScale <= 0.9) ringGrowing = true; }
+    ringMesh.scale.set(ringScale, ringScale, 1);
+    ringMat.opacity = 0.9 - (ringScale - 0.9) * 0.7;
+    lineMaterial.color.setHex(getLineColor());
+    renderer.render(scene, camera);
+  }
+  animate();
+}
+document.addEventListener('DOMContentLoaded', init3DGlobe);
 </script>
 
 </body>
